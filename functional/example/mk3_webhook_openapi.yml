@@ -1,0 +1,1048 @@
+openapi: 3.0.0
+info:
+  version: 4.0.0
+  title: Sauce Labs API Testing
+  description: Customer facing API to allow interactions with the API Testing functionality
+servers:
+  - url: https://api.staging.saucelabs.net/api-testing/rest/v4
+    description: Staging
+  - url: https://api.us-west-1.saucelabs.com/api-testing/rest/v4
+    description: Production
+paths:
+  /{hookId}:
+    get:
+      operationId: getProject
+      description: |
+        Returns the details of a project
+      summary: Get project details
+      tags: [Project]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - basic: [ ]
+      responses:
+        404:
+          $ref: '#/components/responses/not-found'
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/project'
+              examples:
+                default:
+                  externalValue:
+                    samples/project_1.json
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/tests:
+    get:
+      operationId: listTests
+      description: |
+        Lists all the tests of the project
+      summary: List all tests in a project
+      tags: [Tests]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: the list of tests
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/testSummary'
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+    put:
+      operationId: uploadTest
+      description: |
+        Uploads a new test, modifies if the test already exists
+      summary: Upload a test
+      tags: [Tests]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/testUpload'
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/tests/{testId}:
+    get:
+      operationId: getTest
+      description: |
+        Returns the details of a test
+      summary: Get test details
+      tags: [ Tests ]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: testId
+          in: path
+          description: the test ID
+          required: true
+          schema:
+            type: string
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: the test details
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/testDetails'
+  /{hookId}/tests/{testId}/_run:
+    post:
+      operationId: runSingleTest
+      description: |
+        Runs a single test
+      summary: Run a single test
+      tags: [ Test execution ]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: testId
+          in: path
+          description: the test ID
+          required: true
+          schema:
+            type: string
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/async'
+              examples:
+                default:
+                  externalValue:
+                    samples/async.json
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/tests/_run-all:
+    post:
+      operationId: runAllTests
+      description: |
+        Runs all the tests in a project
+      summary: Run all tests in a project
+      tags: [Test execution]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/async'
+              examples:
+                default:
+                  externalValue:
+                    samples/async_multiple.json
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/tests/_tag/{tag}/_run:
+    post:
+      operationId: runTestsByTag
+      description: |
+        Runs all the tests in a project matching a tag
+      summary: Run all tests by tag
+      tags: [ Test execution ]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: tag
+          in: path
+          description: The tag
+          required: true
+          schema:
+            type: string
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/async'
+              examples:
+                default:
+                  externalValue:
+                    samples/async.json
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/tests/_exec:
+    post:
+      operationId: execTest
+      description: |
+        Executes a given test
+      summary: Execute a given test
+      tags: [ Test execution ]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/async'
+              examples:
+                default:
+                  externalValue:
+                    samples/async.json
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/tests/{testId}/_run-sync:
+    post:
+      operationId: runSingleTestSync
+      description: |
+        Runs a single test synchronously
+      summary: Run a single test synchronously
+      tags: [ Test execution (synchronous)]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: testId
+          in: path
+          description: the test ID
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          description: response format
+          required: false
+          schema:
+            type: string
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/runSync'
+              examples:
+                default:
+                  externalValue:
+                    samples/run_sync.json
+                withFailures:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: testId
+                    value: fail
+                    priority: 1
+                  externalValue:
+                    samples/run_sync_failures.json
+            text/xml:
+              x-sauce-cond:
+                op: equals
+                collection: queryParams
+                key: format
+                value: junit
+              examples:
+                default:
+                  externalValue:
+                    samples/run_sync.xml
+                withFailures:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: testId
+                    value: fail
+                    priority: 1
+                  externalValue:
+                    samples/run_sync_failures.xml
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/tests/_run-all-sync:
+    post:
+      operationId: runAllTestsSync
+      description: |
+        Runs all the tests in a project synchronously
+      summary: Run all tests in a project synchronously
+      tags: [ Test execution (synchronous)]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: format
+          in: query
+          description: response format
+          required: false
+          schema:
+            type: string
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/runSync'
+              examples:
+                default:
+                  externalValue:
+                    samples/run_all_sync.json
+                withFailures:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: hookId
+                    value: fail
+                    priority: 1
+                  externalValue:
+                    samples/run_all_sync_failures.json
+            text/xml:
+              x-sauce-cond:
+                op: equals
+                collection: queryParams
+                key: format
+                value: junit
+              examples:
+                default:
+                  externalValue:
+                    samples/run_all_sync.xml
+                withFailures:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: hookId
+                    value: fail
+                    priority: 1
+                  externalValue:
+                    samples/run_all_sync_failures.xml
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/tests/_tag/{tag}/_run-sync:
+    post:
+      operationId: runTestsByTagSync
+      description: |
+        Runs all the tests in a project matching a tag synchronously
+      summary: Run all tests by tag synchronously
+      tags: [Test execution (synchronous)]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: tag
+          in: path
+          description: The tag
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          description: Response format
+          required: false
+          schema:
+            type: string
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/runSync'
+              examples:
+                default:
+                  externalValue:
+                    samples/run_sync.json
+                withFailures:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: tag
+                    value: fail
+                    priority: 1
+                  externalValue:
+                    samples/run_sync_failures.json
+            text/xml:
+              x-sauce-cond:
+                op: equals
+                collection: queryParams
+                key: format
+                value: junit
+              examples:
+                default:
+                  externalValue:
+                    samples/run_sync.xml
+                withFailures:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: tag
+                    value: fail
+                    priority: 1
+                  externalValue:
+                    samples/run_sync_failures.xml
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/tests/_exec-sync:
+    post:
+      operationId: execTestSync
+      description: |
+        Executes a given test synchronously
+      summary: Execute a given test synchronously
+      tags: [ Test execution (synchronous)]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                unit:
+                  type: string
+                input:
+                  type: string
+                name:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/runSync'
+              examples:
+                default:
+                  externalValue:
+                    samples/run_sync.json
+                withFailures:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: hookId
+                    value: fail
+                    priority: 1
+                  externalValue:
+                    samples/run_sync_failures.json
+            text/xml:
+              x-sauce-cond:
+                op: equals
+                collection: queryParams
+                key: format
+                value: junit
+              examples:
+                default:
+                  externalValue:
+                    samples/run_sync.xml
+                withFailures:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: hookId
+                    value: fail
+                    priority: 1
+                  externalValue:
+                    samples/run_sync_failures.xml
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+        401:
+          $ref: '#/components/responses/auth-error'
+  /{hookId}/insights/events:
+    get:
+      operationId: listEvents
+      description: |
+        Returns the events
+      summary: List all events
+      tags: [Events]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: the summary of the events
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/eventSummary'
+  /{hookId}/insights/events/{eventId}:
+    get:
+      operationId: getEvent
+      description: |
+        Returns the details of an event
+      summary: Get event details
+      tags: [Events]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: eventId
+          in: path
+          description: the ID of an event
+          required: true
+          schema:
+            type: string
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: the summary of the events
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/eventDetails'
+  /{hookId}/insights/metrics:
+    get:
+      operationId: listMetrics
+      description: |
+        Returns the metrics
+      summary: Get metrics
+      tags: [Metrics]
+      parameters:
+        - name: hookId
+          in: path
+          description: the hook ID, as retrieved in the dashboard
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - basic: [ ]
+      responses:
+        200:
+          description: the summary of the metrics
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/metrics'
+components:
+  schemas:
+    project:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        notes:
+          type: string
+        emailNotifications:
+          type: array
+          items:
+            type: string
+        connectorNotifications:
+          type: array
+          items:
+            type: string
+    testSummary:
+        type: object
+        properties:
+          complete:
+            type: boolean
+          description:
+            type: string
+          id:
+            type: string
+          lastModified:
+            type: string
+          name:
+            type: string
+          schedules:
+            type: object
+            properties:
+              active:
+                type: integer
+              total:
+                type: integer
+          status:
+            type: object
+            properties:
+              lastUpdate:
+                type: string
+              success:
+                type: boolean
+          tags:
+            type: array
+            items:
+              type: string
+          user:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+    testData:
+      type: object
+      properties:
+        id:
+          type: string
+        input:
+          type: string
+        unit:
+          type: string
+        lastModified:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+    testDetails:
+      type: object
+      properties:
+        published:
+          $ref: '#/components/schemas/testData'
+        workingCopy:
+          $ref: '#/components/schemas/testData'
+    testUpload:
+      type: object
+      properties:
+        published:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            description:
+              type: string
+            lastModified:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+            input:
+              type: string
+            unit:
+              type: string
+    runSync:
+      type: object
+      properties:
+        id:
+          type: string
+        events:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: integer
+        tags:
+          type: array
+          items:
+            type: string
+        criticalFailures:
+          type: array
+          items:
+            type: object
+            properties:
+              action:
+                type: string
+              expression:
+                type: string
+              extra:
+                type: string
+              failureType:
+                type: string
+              status:
+                type: integer
+              success:
+                type: boolean
+        httpFailures:
+          type: array
+          items:
+            type: string
+        facts:
+          type: object
+        date:
+          type: number
+        test:
+          type: object
+          properties:
+            name:
+              type: string
+            id:
+              type: string
+        failuresCount:
+          type: integer
+        warningsCount:
+          type: integer
+        compressed:
+          type: boolean
+        run:
+          type: object
+        company:
+          type: object
+          properties:
+            name:
+              type: string
+            id:
+              type: string
+        project:
+          type: object
+          properties:
+            name:
+              type: string
+            id:
+              type: string
+        contextId:
+          type: string
+        temp:
+          type: boolean
+        executionTimeSeconds:
+          type: integer
+        taskId:
+          type: string
+        mode:
+          type: string
+        exception:
+          type: string
+    async:
+      type: object
+      properties:
+        contextIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+        eventIds:
+          type: array
+          items:
+            type: string
+        taskId:
+          type: string
+          format: uuid
+        testIds:
+          type: array
+          items:
+            type: string
+    eventSummary:
+      type: object
+      properties:
+        _id:
+          type: string
+        criticalFailures:
+          type: array
+          items:
+            type: string
+        date:
+          type: string
+        failuresCount:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+        taskId:
+          type: string
+        test:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        warningsCount:
+          type: integer
+    eventDetails:
+      type: object
+      properties:
+        _id:
+          type: string
+        company:
+          type: object
+          properties:
+            id:
+              type: string
+            compressed:
+              type: boolean
+            criticalFailures:
+              type: array
+              items:
+                type: string
+            date:
+              type: integer
+            events:
+              type: object
+            executionTimeSeconds:
+              type: integer
+            expireAt:
+              type: string
+            facts:
+              type: object
+            httpFailures:
+              type: array
+              items:
+                type: string
+            mode:
+              type: string
+            project:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+            run:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+            tags:
+              type: array
+              items:
+                type: string
+            taskId:
+              type: string
+            temp:
+              type: boolean
+            test:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+            warningsCount:
+              type: integer
+    metrics:
+      type: object
+      properties:
+        _id:
+          type: string
+        code:
+          type: number
+        fetch:
+          type: integer
+        footprint:
+          type: string
+        latency:
+          type: integer
+        method:
+          type: string
+        path:
+          type: string
+        query:
+          type: string
+        success:
+          type: boolean
+        time:
+          type: string
+        url:
+          type: string
+  responses:
+    auth-error:
+      description: Authentication error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+    not-found:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              status:
+                type: string
+      x-sauce-cond:
+        op: equals
+        collection: uriParams
+        key: hookId
+        value: xyz
+        priority: 1
+  securitySchemes:
+    basic:
+      type: http
+      scheme: basic
+      description: |
+        Basic authentication using Sauce Labs username
+        and Sauce Labs access key as password

@@ -1,0 +1,18 @@
+<sets
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="main" xsi:noNamespaceSchemaLocation="http://mastiff.apifortress.com/app/input.xsd">
+	<global>
+		<param name="protocol">http://</param>
+		<param name="domain">demoapi.apifortress.com</param>
+		<param name="endpoint">/api/retail/product/${id}</param>
+		<param name="auth">ABC123</param>
+	</global>
+	<set name="product 1">
+		<param name="id">1</param>
+	</set>
+	<set name="product 2">
+		<param name="id">4</param>
+	</set>
+	<set name="product 3">
+		<param name="id">7</param>
+	</set>
+</sets>

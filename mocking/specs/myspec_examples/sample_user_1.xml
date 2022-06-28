@@ -1,0 +1,7 @@
+<user>
+    <username>foobar</username>
+    <first_name>John</first_name>
+    <last_name>Doe</last_name>
+    <email>john.doe@foobar.com</email>
+    <is_admin>false</is_admin>
+</user>

@@ -1,0 +1,9 @@
+<sets
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="main" xsi:noNamespaceSchemaLocation="http://mastiff.apifortress.com/app/input.xsd">
+	<global>
+		<param name="protocol">http://</param>
+		<param name="domain">demoapi.apifortress.com</param>
+		<param name="endpoint">/api/retail/product</param>
+		<param name="auth">ABC123</param>
+	</global>
+</sets>

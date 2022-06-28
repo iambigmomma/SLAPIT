@@ -1,0 +1,71 @@
+<unit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="main" xsi:noNamespaceSchemaLocation="http://apifortress.com/app/unit.xsd">
+    <requirements></requirements>
+    <configs></configs>
+    <sequence name="">
+        <get url="${protocol}${domain}${productListingEndpoint}" params="[:]" var="productsPayload" mode="json">
+            <header name="key" value="${auth}"/>
+            <config name="footprint" value="${protocol}${domain}${productListingEndpoint}"/>
+        </get>
+        <if expression="productsPayload_response.statusCode!=&apos;200&apos;">
+            <comment>
+                <![CDATA[endpoint is not working fine, test will be stopped]]>
+            </comment>
+            <flow command="stop"/>
+        </if>
+        <assert-is expression="productsPayload" type="array" mode="all" comment="payload must be an array"/>
+        <each expression="productsPayload.pick(5)">
+            <comment>
+                <![CDATA[product id is: ${_1.id} and product name is: ${_1.name}]]>
+            </comment>
+            <assert-is expression="_1.id" type="integer" mode="all" comment="id must be an integer value"/>
+            <set var="id" value="${_1.id}" lang="java"/>
+            <assert-exists expression="_1.name"  mode="all" comment="name must exists"/>
+            <assert-is expression="_1.price" type="float" mode="all" comment="price must be a float number"/>
+            <assert-exists expression="_1.category"  mode="all" comment="category must exists"/>
+            <assert-exists expression="_1.description"  mode="all" comment="description must exists"/>
+            <assert-is expression="_1.quantity" type="integer" mode="all" comment="quantity must be an integer value"/>
+            <assert-greater expression="_1.quantity" value="0" type="integer" mode="all" comment="quantity must be greater than 0"/>
+            <assert-is expression="_1.imageURL" type="url" mode="all" comment="imageURL must be a valid url value"/>
+            <assert-is expression="_1.color" type="array" mode="all" comment="color must be an array"/>
+            <each expression="_1.color">
+                <assert-exists expression="_2"  mode="all" comment="color array should contain some values"/>
+                <assert-in expression="_2" value="['yellow','blue','red','green','brown','orange','gray','pink','black','white']" mode="all" comment="colors must be the expected one"/>
+            </each>
+            <assert-exists expression="_1.createdAt"  mode="all" comment="createdAt must exists"/>
+            <assert-exists expression="_1.updatedAt"  comment="updateAt must exists"/>
+            <comment>
+                <![CDATA[get product details]]>
+            </comment>
+            <get url="${protocol}${domain}${productDetailsEndpoint}" params="[:]" var="productPayload" mode="json">
+                <header name="key" value="${auth}"/>
+                <config name="footprint" value="${protocol}${domain}/api/retail/product/[id]"/>
+            </get>
+            <if expression="productPayload_response.statusCode!=&apos;200&apos;">
+                <comment>
+                    <![CDATA[endpoint is not working fine, test will be stopped]]>
+                </comment>
+                <flow command="stop"/>
+            </if>
+            <assert-exists expression="productPayload"  mode="all" comment="payload must exist, if not, test does not need to be executed" stoponfail="true"/>
+            <comment>
+                <![CDATA[product id is: ${productPayload.id} and product name is: ${productPayload.name}]]>
+            </comment>
+            <assert-is expression="productPayload.id" type="integer" mode="all" comment="id must be an integer value"/>
+            <assert-exists expression="productPayload.name"  mode="all" comment="name must exists"/>
+            <assert-is expression="productPayload.price" type="float" mode="all" comment="price must be a float number"/>
+            <assert-exists expression="productPayload.category"  mode="all" comment="category must exists"/>
+            <assert-exists expression="productPayload.description"  mode="all" comment="description must exists"/>
+            <assert-is expression="productPayload.quantity" type="integer" mode="all" comment="quantity must be an integer value"/>
+            <assert-greater expression="productPayload.quantity" value="0" type="integer" mode="all" comment="quantity must be greater than 0"/>
+            <assert-is expression="productPayload.imageURL" type="url" mode="all" comment="imageURL must be a valid url value"/>
+            <assert-is expression="productPayload.color" type="array" mode="all" comment="color must be an array"/>
+            <each expression="productPayload.color">
+                <assert-exists expression="_2"  mode="all" comment="color array should contain some values"/>
+                <assert-in expression="_2" value="['yellow','blue','red','green','brown','orange','gray','pink','black','white']" mode="all" comment="colors must be the expected one"/>
+            </each>
+            <assert-exists expression="productPayload.createdAt"  mode="all" comment="createdAt must exists"/>
+            <assert-exists expression="productPayload.updatedAt"  comment="updateAt must exists"/>
+        </each>
+    </sequence>
+</unit>

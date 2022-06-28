@@ -1,0 +1,201 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: MySpec
+  description: Trying to use sauce extension
+servers:
+  - url: http://example.com/api/v1
+
+paths:
+  /release-notes:
+    get:
+      operationId: getReleaseNotes
+      parameters:
+        - name: version
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: returns release notes
+          headers:
+            version:
+              schema:
+                type: integer
+              required: true
+              example:
+                12
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/releaseNotes'
+  /user:
+    get:
+      operationId: getUser
+      responses:
+        '200':
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
+            priority: 10
+          description: returns a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+              examples:
+                sample_user_1:
+                  externalValue: myspec_examples/sample_user_1.json
+            text/xml:
+              x-sauce-cond:
+                op: equals
+                collection: queryParams
+                key: format
+                value: xml
+                priority: 10
+              schema:
+                $ref: '#/components/schemas/user'
+              examples:
+                sample_user_1:
+                  externalValue: myspec_examples/sample_user_1.xml
+        '401':
+          description: no authorization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example:
+                {
+                    "message": "User not authorized",
+                    "code": 401
+                }
+  /user/{id}:
+    get:
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          x-sauce-cond:
+            op: exists
+            collection: headers
+            key: authorization
+            priority: 10
+          description: returns a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+              examples:
+                sample_user_1:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: id
+                    value: foobar
+                    priority: 10
+                  externalValue: myspec_examples/sample_user_1.json
+                sample_user_2:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: id
+                    value: dumbbar
+                    priority: 10
+                  externalValue: myspec_examples/sample_user_2.json
+                sample_user_3:
+                  x-sauce-cond:
+                    op: equals
+                    collection: uriParams
+                    key: id
+                    value: drawbar
+                    priority: 10
+                  externalValue: myspec_examples/sample_user_3.json
+        '401':
+          description: no authorization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example:
+                {
+                    "message": "User not authorized",
+                    "code": 401
+                }
+  /echo:
+    get:
+      operationId: echo
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                echo:
+                  externalValue: myspec_examples/echo.json
+  /post-check:
+    post:
+      operationId: postCheck
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+      responses:
+        '200':
+          description: foobar
+          content:
+            application/json:
+              example: |
+                {
+                  "status":"OK",
+                  "id": {{body.id}}
+                }
+              
+
+
+components:
+  schemas:
+    releaseNotes:
+      type: object
+      required:
+      - text
+      - contact
+      properties:
+        text:
+          type: string
+        contact:
+          type: string
+          x-sauce-faker: internet.email
+    user:
+      type: object
+      additionalProperties: false
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        is_admin:
+          type: boolean
+    error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: number

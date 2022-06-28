@@ -1,0 +1,36 @@
+<unit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="main" xsi:noNamespaceSchemaLocation="http://apifortress.com/app/unit.xsd">
+    <requirements></requirements>
+    <configs></configs>
+    <sequence name="">
+        <get url="${protocol}${domain}${endpoint}" params="[:]" var="payload" mode="json">
+            <header name="key" value="${auth}"/>
+            <config name="footprint" value="${protocol}${domain}/api/retail/product/[id]"/>
+        </get>
+        <if expression="payload_response.statusCode!=&apos;200&apos;">
+            <comment>
+                <![CDATA[endpoint is not working fine, test will be stopped]]>
+            </comment>
+            <flow command="stop"/>
+        </if>
+        <assert-exists expression="payload"  mode="all" comment="payload must exist, if not, test does not need to be executed" stoponfail="true"/>
+        <comment>
+            <![CDATA[product id is: ${payload.id} and product name is: ${payload.name}]]>
+        </comment>
+        <assert-is expression="payload.id" type="integer" mode="all" comment="id must be an integer value"/>
+        <assert-exists expression="payload.name"  mode="all" comment="name must exists"/>
+        <assert-is expression="payload.price" type="float" mode="all" comment="price must be a float number"/>
+        <assert-exists expression="payload.category"  mode="all" comment="category must exists"/>
+        <assert-exists expression="payload.description"  mode="all" comment="description must exists"/>
+        <assert-is expression="payload.quantity" type="integer" mode="all" comment="quantity must be an integer value"/>
+        <assert-greater expression="payload.quantity" value="0" type="integer" mode="all" comment="quantity must be greater than 0"/>
+        <assert-is expression="payload.imageURL" type="url" mode="all" comment="imageURL must be a valid url value"/>
+        <assert-is expression="payload.color" type="array" mode="all" comment="color must be an array"/>
+        <each expression="payload.color">
+            <assert-exists expression="_1"  mode="all" comment="color array should contain some values"/>
+            <assert-in expression="_1" value="['yellow','blue','red','green','brown','orange','gray','pink','black','white']" mode="all" comment="colors must be the expected one"/>
+        </each>
+        <assert-exists expression="payload.createdAt"  mode="all" comment="createdAt must exists"/>
+        <assert-exists expression="payload.updatedAt"  comment="updateAt must exists"/>
+    </sequence>
+</unit>

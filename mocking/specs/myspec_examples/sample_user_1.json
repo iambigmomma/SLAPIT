@@ -1,0 +1,8 @@
+{
+
+    "username": "foobar",
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@foobar.com",
+    "is_admin": false
+}

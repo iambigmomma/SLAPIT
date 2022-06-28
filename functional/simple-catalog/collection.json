@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "d721e6fc-6c03-480f-9f15-df9b0f4d340c",
+		"name": "demoapi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "product listing",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "key",
+						"value": "ABC123",
+						"type": "text"
+					}
+				],
+				"url": "http://demoapi.apifortress.com/api/retail/product"
+			},
+			"response": []
+		},
+		{
+			"name": "product details",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "key",
+						"value": "ABC123",
+						"type": "text"
+					}
+				],
+				"url": "http://demoapi.apifortress.com/api/retail/product/1"
+			},
+			"response": []
+		}
+	]
+}
