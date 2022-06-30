@@ -18,6 +18,11 @@ paths:
             type: integer
       responses:
         '200':
+          x-sauce-cond:
+            op: matches
+            collection: headers
+            key: authorization
+            value: Basic .*
           description: returns release notes
           headers:
             version:

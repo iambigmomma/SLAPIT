@@ -120,6 +120,13 @@ Run the following commands to start a local Piestry mocking server
 ```sh
 docker run -v "$(pwd)/specs:/specs" -p 6000:5000 quay.io/saucelabs/piestry -u /specs/myspec.yaml
 ```
+Note: For Apple silicon user( ex: Macbook with M1 chipset), you may encounter below message and resolve it by following this [link](https://stackoverflow.com/questions/66662820/m1-docker-preview-and-keycloak-images-platform-linux-amd64-does-not-match-th)
+
+```sh
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+```
+
+
 Execute below example commands to hit the local mocking server
 
 ```sh
@@ -152,7 +159,7 @@ docker run -v "$(pwd)/specs:/specs" -p 6000:5000 quay.io/saucelabs/piestry -u /s
 ![local-contract-testing-example](/assests/contract-testing.gif)
 
 
-#### 3. Logger
+### 3. Logger
 By adding the ```--logger``` together 
 with your Sauce Labs API Testing 
 endpoint, the endpoint hitting records 
