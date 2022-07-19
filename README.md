@@ -74,12 +74,12 @@
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+# Getting Started
 
 
 
 
-### Prerequisites
+## Prerequisites
 
 Below are what you will need before using Sauce Labs's API testing platform,
 1. A Sauce Labs account ([Log in](https://accounts.saucelabs.com/am/XUI/#login/) or sign up for a [free trial license](https://saucelabs.com/sign-up))
@@ -87,7 +87,7 @@ Below are what you will need before using Sauce Labs's API testing platform,
 3. Docker
 
 
-### Environmental setup
+## Environmental setup
 
 <!-- 1. Get a free API Key at [https://example.com](https://example.com) -->
 <!-- 2. Clone the repo -->
@@ -98,27 +98,43 @@ Below are what you will need before using Sauce Labs's API testing platform,
    <!-- ```sh -->
    <!-- npm install -->
    <!-- ``` -->
-1. Export your username, access_key, API Testing endpoint and hook_id as environmental variables
+1. Copy & paste the ```env.sh.template``` into ```env.sh```
+2. Open the ```env.sh``` and setup environmental variables. We will using Sauce Labs EU datacenter for this repo.
+  -  HOOK_ID: Go to the API Testing dashboard, select a project, go to webhooks and generate one. Copy just the alphanumeric ID (not the whole URL)
+  -  BUILD_ID: This can be anything like 627 or 123
    ```sh
-   export SAUCE_USERNAME = 'ENTER YOUR USERNAME'
-   export SAUCE_ACCESS_KEY = 'ENTER YOUR ACCESSKEY'
-   export SAUCE_API_ENDPOINT = 'ENTER YOUR '
-   export HOOK_ID = 'ENTER YOUR HOOOK ID'
+   export SPEC_FILE=demoapi.yaml
+   export SAUCE_USERNAME='ENTER YOUR USERNAME'
+   export SAUCE_ACCESS_KEY='ENTER YOUR ACCESSKEY'
+   export HOOK_ID='ENTER YOUR HOOOK ID'
+   export BUILD_ID='ENTER YOUR BUILD ID'
+   export PIESTRY_PORT=6000
+   export DC=api.us-central-1.saucelabs.com
    ```
-
+3. Run ```./env.sh```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+# Usage
 
-### 1. Mocking server
+## 1. Basic
+[TBD]
+
+
+
+## 2. Mocking server
+
+[What is piestry?]
+[What is the value to use piestry?]
+[How to use piestry?]
+
 
 Run the following commands to start a local Piestry mocking server
 
 ```sh
-docker run -v "$(pwd)/specs:/specs" -p 6000:5000 quay.io/saucelabs/piestry -u /specs/myspec.yaml
+docker run -v "$(pwd)/specs:/specs" -p $PIESTRY_PORT:5000 quay.io/saucelabs/piestry -u /specs/myspec.yaml
 ```
 Note: For Apple silicon user( ex: Macbook with M1 chipset), you may encounter below message and resolve it by following this [link](https://stackoverflow.com/questions/66662820/m1-docker-preview-and-keycloak-images-platform-linux-amd64-does-not-match-th)
 
@@ -131,24 +147,45 @@ Execute below example commands to hit the local mocking server
 
 ```sh
 #Get dynamic generated release-notes
-curl localhost:6000/api/v1/release-notes
+curl localhost:$PIESTRY_PORT/api/v1/release-notes
 
 #Get echo
-curl localhost:6000/api/v1/echo
+curl localhost:$PIESTRY_PORT/api/v1/echo
 
 #Get user
-curl -u "example_username:1234" localhost:6000/api/v1/user/
+curl -u "example_username:1234" localhost:$PIESTRY_PORT/api/v1/user/
 
 #Get specific user
-curl -u "example_username:1234" localhost:6000/api/v1/user/foobar
+curl -u "example_username:1234" localhost:$PIESTRY_PORT/api/v1/user/foobar
 
-curl -u "example_username:1234" localhost:6000/api/v1/user/dumbbar
+curl -u "example_username:1234" localhost:$PIESTRY_PORT/api/v1/user/dumbbar
 ```
 ![local-mocking-server-example](/assests/mocking-server.gif)
 
 
 
-### 2. Contract testing
+## 3. Contract testing
+[What is contract testing?]
+
+[What is the value of contract testing?]
+
+[When should you use contract testing?]
+
+### Usecase: Access local development environment
+
+If your new change already deployed into an non-public facing environment(ex: ```localhost``` or staging server), you can use Sauce Connect to setup tunnel for secure access together with APIT. Please follow below steps,
+
+1. Initiate a Sauce Connect tunnel. You can follow this [quickstart](https://docs.saucelabs.com/api-testing/sauce-connect/)
+2. Once established, please click into the project page and select the tunnel under the Run All button
+3. Click Run All button and API testing can test the your local backend system
+
+
+### Usecase: Access production environment
+TBD
+
+## How to use Logger?
+
+
 By adding the ```--logger``` and ```insights/events/_contract```together 
 with your Sauce Labs API Testing 
 endpoint, the logging records 
@@ -159,7 +196,6 @@ docker run -v "$(pwd)/specs:/specs" -p 6000:5000 quay.io/saucelabs/piestry -u /s
 ![local-contract-testing-example](/assests/contract-testing.gif)
 
 
-### 3. Logger
 By adding the ```--logger``` together 
 with your Sauce Labs API Testing 
 endpoint, the endpoint hitting records 
@@ -171,6 +207,8 @@ docker run -v "$(pwd)/specs:/specs" -p 6000:5000 quay.io/saucelabs/piestry -u /s
 ![logger-example](/assests/logger.gif)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+### Test against the development environment
 
 <!-- CONTRIBUTING -->
 <!-- ## Contributing -->
