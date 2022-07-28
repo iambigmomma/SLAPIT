@@ -129,18 +129,29 @@ Below are what you will need before using Sauce Labs's API testing platform,
 ### 2. Create API testing in project
 ![generate-api-test](/assests/generate-test.png)
 
-To start functional testing on the Sauce Labs API Testing platform, we provide some example code in the folder [functional-testing](./functional-testing/). 
+To start functional testing on the Sauce Labs API Testing platform, you can follow this [guide](https://docs.saucelabs.com/api-testing/quickstart/)together with our example code in the folder [functional-testing](./functional-testing/). 
 
 There are three ways to create your API testing cases,
--  **Use HTTP Client**: Please follow this [tutorial]()
+-  **Use HTTP Client**: Enter an open API endpoint you would like to try out first
 -  **Import OpenAPI / Postman**: Import the files from this [Postman folder](./functional-testing/demo-example/Postman/)
 -  **Upload Archive**: Upload this [archive](./functional-testing/demo-example/SLAPIT-archieve/) to the UI
 
-3. Automatic validation test
-Once created, you can run the test and see if the expected response is return.
+### 3. Automatic validation test
+Once you run the test and receive an expected response. Then you can click the Generate Test button in green to have an automatic validation.
 
-To have an automatic validation test, click the Generate Test button.
+To add more customized logic into the standard validation test, please follow this [tutorial](https://docs.saucelabs.com/api-testing/composer/#add-test-components)
 
+### 4. Publish and schedule
+Once your Composer is ready, click the publish button then you can start to schedule the test without any CI integration. Please follow this [guide](https://docs.saucelabs.com/api-testing/schedule-test/)
+
+To reuse the same API test across different environments in the scheduler, you can use ```Overrides``` to switch parameterize variables. 
+
+For example, you can assign ```domain``` variable into your staging endpoint(ex: ```utils.apitfortress.com```) and schedule to run it on every hour.
+![schedule-test-overrides](./assests/schedule-test-overrides.png)
+
+### 5. Integration
+You can create multiple webhooks to integrate with your CI solution, notification software. Please follow this [guide](https://docs.saucelabs.com/api-testing/integrations/apifctl-cicd-integration/)
+![webhooks](./assests/webhooks.png)
 
 
 ## Mocking server
