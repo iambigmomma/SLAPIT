@@ -117,17 +117,38 @@ Below are what you will need before using Sauce Labs's API testing platform,
 
 
 <!-- USAGE EXAMPLES -->
-# Usage
+# Quickstart
 
-## 1. Basic
+## Functinal testing
+[What is funtional testing?]
+
+[What is the value?]
+
+### 1. Create a project
 [TBD]
+### 2. Create API testing in project
+![generate-api-test](/assests/generate-test.png)
+
+To start functional testing on the Sauce Labs API Testing platform, we provide some example code in the folder [functional-testing](./functional-testing/). 
+
+There are three ways to create your API testing cases,
+-  **Use HTTP Client**: Please follow this [tutorial]()
+-  **Import OpenAPI / Postman**: Import the files from this [Postman folder](./functional-testing/demo-example/Postman/)
+-  **Upload Archive**: Upload this [archive](./functional-testing/demo-example/SLAPIT-archieve/) to the UI
+
+3. Automatic validation test
+Once created, you can run the test and see if the expected response is return.
+
+To have an automatic validation test, click the Generate Test button.
 
 
 
-## 2. Mocking server
+## Mocking server
 
 [What is piestry?]
+
 [What is the value to use piestry?]
+
 [How to use piestry?]
 
 
@@ -164,7 +185,7 @@ curl -u "example_username:1234" localhost:$PIESTRY_PORT/api/v1/user/dumbbar
 
 
 
-## 3. Contract testing
+## Contract testing
 [What is contract testing?]
 
 [What is the value of contract testing?]
