@@ -154,7 +154,7 @@ For example, you can assign ```domain``` variable into your staging endpoint(ex:
 You can create multiple webhooks to integrate with your CI solution, notification software. Please follow this [guide](https://docs.saucelabs.com/api-testing/integrations/apifctl-cicd-integration/)
 ![webhooks](./assests/webhooks.png)
 
-
+<!-- 
 ## Mocking server
 
 [What is piestry?]
