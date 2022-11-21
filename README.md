@@ -147,7 +147,7 @@ Once your Composer is ready, click the publish button then you can start to sche
 
 To reuse the same API test across different environments in the scheduler, you can use ```Overrides``` to switch parameterize variables. 
 
-For example, you can assign ```domain``` variable into your staging endpoint(ex: ```utils.apitfortress.com```) and schedule to run it on every hour.
+For example, you can assign ```domain``` variable into your staging endpoint(ex: ```utils.apifortress.com```) and schedule to run it on every hour.
 ![schedule-test-overrides](./assests/schedule-test-overrides.png)
 
 ### 5. Integration
