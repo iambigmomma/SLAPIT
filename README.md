@@ -147,13 +147,13 @@ Once your Composer is ready, click the publish button then you can start to sche
 
 To reuse the same API test across different environments in the scheduler, you can use ```Overrides``` to switch parameterize variables. 
 
-For example, you can assign ```domain``` variable into your staging endpoint(ex: ```utils.apitfortress.com```) and schedule to run it on every hour.
+
+For example, you can assign ```domain``` variable into your staging endpoint(ex: ```utils.apifortress.com```) and schedule to run it on every hour.
 ![schedule-test-overrides](./assests/schedule-test-overrides.png)
 
 ### 5. Integration
 You can create multiple webhooks to integrate with your CI solution, notification software. Please follow this [guide](https://docs.saucelabs.com/api-testing/integrations/apifctl-cicd-integration/)
 ![webhooks](./assests/webhooks.png)
-
 
 ## Mocking server
 
@@ -273,7 +273,7 @@ docker run -v "$(pwd)/specs:/specs" -p 6000:5000 quay.io/saucelabs/piestry -u /s
 <!-- CONTACT -->
 ## Contact
 
-Jeff Fan - jeff.fan@saucelabs.com
+Jeff Fan - jeff.fan27@gmail.com
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
