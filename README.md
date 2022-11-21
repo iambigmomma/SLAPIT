@@ -119,11 +119,6 @@ Below are what you will need before using Sauce Labs's API testing platform,
 <!-- USAGE EXAMPLES -->
 # Quickstart
 
-## Functinal testing
-[What is funtional testing?]
-
-[What is the value?]
-
 ### 1. Create a project
 Click the ```Create Project``` button in blue on the right.
 
@@ -156,13 +151,6 @@ You can create multiple webhooks to integrate with your CI solution, notificatio
 ![webhooks](./assests/webhooks.png)
 
 ## Mocking server
-
-[What is piestry?]
-
-[What is the value to use piestry?]
-
-[How to use piestry?]
-
 
 Run the following commands to start a local Piestry mocking server
 
@@ -212,10 +200,6 @@ If your new change already deployed into an non-public facing environment(ex: ``
 2. Once established, please click into the project page and select the tunnel under the Run All button
 3. Click Run All button and API testing can test the your local backend system
 
-
-### Usecase: Access production environment
-TBD
-
 ## How to use Logger?
 
 
@@ -240,8 +224,6 @@ docker run -v "$(pwd)/specs:/specs" -p 6000:5000 quay.io/saucelabs/piestry -u /s
 ![logger-example](/assests/logger.gif)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-### Test against the development environment
 
 <!-- CONTRIBUTING -->
 <!-- ## Contributing -->
